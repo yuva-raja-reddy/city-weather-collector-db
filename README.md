@@ -2,6 +2,23 @@
 
 This project fetches weather data for a specified city using the OpenWeatherMap API, processes the data, and stores it in a PostgreSQL database. The PostgreSQL service is automatically started from the Python code, so there's no need to start it manually.
 
+## Project Overview
+
+The project collects real-time weather data, including temperature, humidity, wind speed, and weather conditions, from the OpenWeatherMap API for the specified city.
+The data is cleaned and processed, such as converting temperature from Kelvin to Celsius and removing any unnecessary fields.
+After cleaning, the data is stored in a PostgreSQL database, allowing for long-term storage and analysis of historical weather data.
+The data collection process is automated and scheduled to run at regular intervals, making the data collection continuous and seamless.
+
+---
+
+<p align="center">
+  <img src="https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME/blob/main/Blank%20diagram%20-%20Page%201.png" alt="Weather Data Collection Pipeline">
+</p>
+
+<p align="center"><strong>Figure: Weather Data Collection Pipeline</strong></p>
+
+---
+
 ## Features
 - Fetches weather data (temperature, humidity, wind speed, etc.)
 - Cleans and processes the data (e.g., converts temperature to Celsius)
