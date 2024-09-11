@@ -9,15 +9,11 @@ The data is cleaned and processed, such as converting temperature from Kelvin to
 After cleaning, the data is stored in a PostgreSQL database, allowing for long-term storage and analysis of historical weather data.
 The data collection process is automated and scheduled to run at regular intervals, making the data collection continuous and seamless.
 
----
-
 <p align="center">
   <img src="https://github.com/yuva-raja-reddy/city-weather-collector-db/blob/main/images/pipeline.png" alt="Weather Data Collection Pipeline" width="500">
 </p>
-
 <p align="center"><em>"Weather Data Collection Pipeline"</em></p>
 
----
 
 ## Features
 - Fetches weather data (temperature, humidity, wind speed, etc.)
