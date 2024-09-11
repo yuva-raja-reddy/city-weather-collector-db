@@ -12,7 +12,7 @@ The data collection process is automated and scheduled to run at regular interva
 ---
 
 <p align="center">
-  <img src="https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME/blob/main/Blank%20diagram%20-%20Page%201.png" alt="Weather Data Collection Pipeline">
+  <img src="https://github.com/yuva-raja-reddy/city-weather-collector-db/blob/main/images/pipeline.png" alt="Weather Data Collection Pipeline">
 </p>
 
 <p align="center"><strong>Figure: Weather Data Collection Pipeline</strong></p>
