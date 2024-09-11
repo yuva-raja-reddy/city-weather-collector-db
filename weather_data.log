@@ -1,0 +1,25 @@
+2024-09-11 04:15:09 - INFO - PostgreSQL service started successfully on macOS.
+2024-09-11 04:15:09 - INFO - Initialized WeatherDataCollector for city: Buffalo
+2024-09-11 04:15:09 - INFO - WeatherScheduler initialized to run every 10 seconds.
+2024-09-11 04:15:09 - INFO - Scheduled job to run every 10 seconds.
+2024-09-11 04:15:09 - INFO - Starting the scheduler...
+2024-09-11 04:15:19 - INFO - Fetching weather data for city: Buffalo
+2024-09-11 04:15:20 - INFO - Weather data fetched successfully for city: Buffalo
+2024-09-11 04:15:20 - INFO - Weather data cleaned for city: Buffalo
+2024-09-11 04:15:20 - INFO - Data successfully stored in the database for city: Buffalo
+2024-09-11 04:15:30 - INFO - Fetching weather data for city: Buffalo
+2024-09-11 04:15:30 - INFO - Weather data fetched successfully for city: Buffalo
+2024-09-11 04:15:30 - INFO - Weather data cleaned for city: Buffalo
+2024-09-11 04:15:30 - INFO - Data successfully stored in the database for city: Buffalo
+2024-09-11 04:15:40 - INFO - Fetching weather data for city: Buffalo
+2024-09-11 04:15:40 - INFO - Weather data fetched successfully for city: Buffalo
+2024-09-11 04:15:40 - INFO - Weather data cleaned for city: Buffalo
+2024-09-11 04:15:40 - INFO - Data successfully stored in the database for city: Buffalo
+2024-09-11 04:15:50 - INFO - Fetching weather data for city: Buffalo
+2024-09-11 04:15:50 - INFO - Weather data fetched successfully for city: Buffalo
+2024-09-11 04:15:50 - INFO - Weather data cleaned for city: Buffalo
+2024-09-11 04:15:50 - INFO - Data successfully stored in the database for city: Buffalo
+2024-09-11 04:16:00 - INFO - Fetching weather data for city: Buffalo
+2024-09-11 04:16:00 - INFO - Weather data fetched successfully for city: Buffalo
+2024-09-11 04:16:00 - INFO - Weather data cleaned for city: Buffalo
+2024-09-11 04:16:01 - INFO - Data successfully stored in the database for city: Buffalo
