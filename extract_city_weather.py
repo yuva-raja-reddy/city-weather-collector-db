@@ -37,7 +37,7 @@ def check_postgresql_status():
     try:
         if system == "Darwin":  # macOS
             result = subprocess.run(["brew", "services", "list"], capture_output=True, text=True)
-            return "postgresql" in result.stdout and "started" in result.stdout
+            return "postgresql@14" in result.stdout and "started" in result.stdout
 
         elif system == "Linux":
             result = subprocess.run(["systemctl", "is-active", "--quiet", "postgresql"], capture_output=True)
@@ -71,7 +71,7 @@ def start_postgresql():
 
     try:
         if system == "Darwin":  # macOS
-            subprocess.run(["brew", "services", "start", "postgresql"], check=True)
+            subprocess.run(["brew", "services", "start", "postgresql@14"], check=True)  # Use postgresql@14 specifically
             logging.info("PostgreSQL service started successfully on macOS.")
 
         elif system == "Linux":
@@ -83,13 +83,11 @@ def start_postgresql():
                 logging.info("PostgreSQL service started successfully on Linux (service).")
 
         elif system == "Windows":
-            # Windows needs to be run with administrative privileges
             try:
                 subprocess.run(["sc", "start", "postgresql-x64-14"], check=True)
                 logging.info("PostgreSQL service started successfully on Windows.")
             except subprocess.CalledProcessError as e:
                 logging.error(f"Error starting PostgreSQL service on Windows: {e}")
-                # Provide instructions to the user
                 logging.error("Ensure you have administrative privileges to start the PostgreSQL service.")
         
         else:
@@ -276,11 +274,11 @@ if __name__ == "__main__":
     # Extract database URL from the config
     db_url = config['db_url']
 
-    # Create the database if it does not exist
-    create_database_if_not_exists(db_url)
-
     # Start PostgreSQL service before running the rest of the script
     start_postgresql()
+
+    # Create the database if it does not exist
+    create_database_if_not_exists(db_url)
 
     # Instantiate the WeatherDataCollector with config data
     collector = WeatherDataCollector(config)

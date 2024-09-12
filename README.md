@@ -50,7 +50,7 @@ brew services start postgresql@14
 ```
 
 #### **Windows**:
-1. Download and install PostgreSQL from the official website or [click here](https://sbp.enterprisedb.com/getfile.jsp?fileid=1259125) to install PostgreSQL 14.13.
+1. Download and install PostgreSQL from the official website or [click here](https://sbp.enterprisedb.com/getfile.jsp?fileid=1259125) to download PostgreSQL 14.13.
 2. During the installation, set a **superuser password** for the PostgreSQL server.
 3. After installation, ensure PostgreSQL is added to the `PATH` variable for easy access to the `psql` command:
    - Go to **System Properties** → **Environment Variables** → Edit the `Path` variable to add the PostgreSQL `bin` directory (e.g., `C:\\Program Files\\PostgreSQL\\14\\bin`).
