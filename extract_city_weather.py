@@ -9,9 +9,13 @@ import time
 from datetime import datetime
 import logging
 import json
-
+import os
+import sys
+import psycopg2
+from psycopg2 import sql
 # Suppress all warnings
 warnings.filterwarnings("ignore")
+
 
 # Configure logging
 logging.basicConfig(
@@ -21,11 +25,48 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
+def check_postgresql_status():
+    """
+    Checks if the PostgreSQL service is running.
+    
+    Returns:
+        bool: True if PostgreSQL is running, False otherwise.
+    """
+    system = platform.system()
+    
+    try:
+        if system == "Darwin":  # macOS
+            result = subprocess.run(["brew", "services", "list"], capture_output=True, text=True)
+            return "postgresql" in result.stdout and "started" in result.stdout
+
+        elif system == "Linux":
+            result = subprocess.run(["systemctl", "is-active", "--quiet", "postgresql"], capture_output=True)
+            return result.returncode == 0
+
+        elif system == "Windows":
+            result = subprocess.run(["sc", "query", "postgresql-x64-14"], capture_output=True, text=True)
+            return "RUNNING" in result.stdout
+
+        else:
+            logging.error(f"Unsupported operating system: {system}")
+            raise EnvironmentError(f"Unsupported operating system: {system}")
+
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error checking PostgreSQL service status: {e}")
+        return False
+    except Exception as e:
+        logging.error(f"An unexpected error occurred while checking service status: {e}")
+        return False
+
 def start_postgresql():
     """
-    Starts the PostgreSQL service in a system-agnostic way.
+    Starts the PostgreSQL service in a system-agnostic way if it is not already running.
     Works for Windows, macOS (with Homebrew), and Linux (with systemd or service).
     """
+    if check_postgresql_status():
+        logging.info("PostgreSQL service is already running.")
+        return
+    
     system = platform.system()
 
     try:
@@ -42,12 +83,14 @@ def start_postgresql():
                 logging.info("PostgreSQL service started successfully on Linux (service).")
 
         elif system == "Windows":
+            # Windows needs to be run with administrative privileges
             try:
-                subprocess.run(["net", "start", "postgresql"], check=True)
-                logging.info("PostgreSQL service started successfully on Windows (net).")
-            except subprocess.CalledProcessError:
                 subprocess.run(["sc", "start", "postgresql-x64-14"], check=True)
-                logging.info("PostgreSQL service started successfully on Windows (sc).")
+                logging.info("PostgreSQL service started successfully on Windows.")
+            except subprocess.CalledProcessError as e:
+                logging.error(f"Error starting PostgreSQL service on Windows: {e}")
+                # Provide instructions to the user
+                logging.error("Ensure you have administrative privileges to start the PostgreSQL service.")
         
         else:
             logging.error(f"Unsupported operating system: {system}")
@@ -57,6 +100,39 @@ def start_postgresql():
         logging.error(f"Error starting PostgreSQL service: {e}")
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
+
+def create_database_if_not_exists(db_url: str):
+    """
+    Creates the database if it does not exist.
+    
+    Args:
+        db_url (str): The full database URL including the database name.
+    """
+    # Remove the database name from the URL to connect to the default database
+    base_url = db_url.rsplit('/', 1)[0]  # Excludes the database name
+    database_name = db_url.rsplit('/', 1)[1]  # Extracts the database name
+
+    # Construct the connection URL for the default 'postgres' database
+    conn_url = base_url + '/postgres'
+
+    try:
+        # Connect to PostgreSQL using psycopg2
+        conn = psycopg2.connect(conn_url)
+        conn.autocommit = True  # Ensure auto-commit mode to run CREATE DATABASE
+        with conn.cursor() as cursor:
+            try:
+                # Attempt to create the database
+                cursor.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(database_name)))
+                logging.info(f"Database '{database_name}' created successfully.")
+            except psycopg2.errors.DuplicateDatabase:
+                logging.info(f"Database '{database_name}' already exists.")
+            except psycopg2.Error as e:
+                logging.error(f"Error creating database '{database_name}': {e}")
+    except Exception as e:
+        logging.error(f"Error connecting to PostgreSQL server: {e}")
+    finally:
+        if conn:
+            conn.close()
 
 
 class WeatherDataCollector:
@@ -193,12 +269,18 @@ class WeatherScheduler:
 
 
 if __name__ == "__main__":
-    # Start PostgreSQL service before running the rest of the script
-    start_postgresql()
-
     # Load the configuration from config.json
     with open('config.json', 'r') as config_file:
         config = json.load(config_file)
+
+    # Extract database URL from the config
+    db_url = config['db_url']
+
+    # Create the database if it does not exist
+    create_database_if_not_exists(db_url)
+
+    # Start PostgreSQL service before running the rest of the script
+    start_postgresql()
 
     # Instantiate the WeatherDataCollector with config data
     collector = WeatherDataCollector(config)
@@ -207,3 +289,4 @@ if __name__ == "__main__":
     scheduler = WeatherScheduler(collector, interval_seconds=10)
     scheduler.schedule_job()
     scheduler.start()
+
